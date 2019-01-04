@@ -10,9 +10,9 @@ namespace OrangeMailbox
 {
     class WebInterfaceInteraction
     {
-        const string YANDEX = "https:////passport.yandex.ru//registration//mail?from=mail&origin=home_v14_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F";
+        IWebDriver browser;
+        const string YANDEX = "https:///passport.yandex.ru//registration//mail?from=mail&origin=home_v14_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F";
          
-        IWebDriver browser = new ChromeDriver();
         const string NAMEID = "firstname";
         const string LASTNAMEID = "lastname";
         const string LOGINID = "login";
@@ -26,13 +26,8 @@ namespace OrangeMailbox
 
         public void OpenOrangeMailboxPage()
         {
+            browser = new ChromeDriver();
             browser.Navigate().GoToUrl(YANDEX);
-            //IWebElement UserName = browser.FindElement(By.Id(NAMEID));
-            //UserName.SendKeys();          
-            //Run browser,
-            // Navigate to the Yandex page,
-            //Find the "New Mailbox" link
-            // Navigate to the page with the new forms
         }
 
         public void FindSecretQuestionAndChoose()

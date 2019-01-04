@@ -14,10 +14,9 @@ namespace OrangeMailbox
         static String XlsFilename = DateTime.UtcNow.Date.ToString("dd_MM_yyyy") + "_Mailboxes.xls";
         static String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
 
-        static Boolean FileExists()
+        public static void FileExists(String FilePath)
         {
-            //Check if file exists
-            return true;
+            Console.WriteLine(File.Exists(FilePath) ? String.Format("OK. The file %s exists.", FilePath) : String.Format("Error: The file %s does not exist.", FilePath));
         }
 
         //static void CreateFile()
@@ -30,7 +29,7 @@ namespace OrangeMailbox
         //    //Write down information into the file specified file
         //}
 
-        static void WriteToFile(string password)
+        public static void WriteToFile(string password)
         {
             StreamWriter SW = new StreamWriter(FilePath, false, Encoding.GetEncoding("windows-1251"));
             SW.Write(password);
