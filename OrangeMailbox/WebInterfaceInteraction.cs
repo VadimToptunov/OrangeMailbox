@@ -10,12 +10,25 @@ namespace OrangeMailbox
 {
     class WebInterfaceInteraction
     {
-        const string YANDEX = "http://yandex.ru";
+        const string YANDEX = "https:////passport.yandex.ru//registration//mail?from=mail&origin=home_v14_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F";
+         
         IWebDriver browser = new ChromeDriver();
+        const string NAMEID = "firstname";
+        const string LASTNAMEID = "lastname";
+        const string LOGINID = "login";
+        const string PASSWID = "password";
+        const string PASSWIDCONFIRM = "password_confirm";
+        const string NOPHONELINKTEXT = "У меня нет телефона";
+        const string CAPTCHA = "captcha";
+        const string SUBMITBUTTONTYPE = "submit";
+        //const string HINTqUESTION = "";
+        const string HINTANSWERTEXT = "Ответ на контрольный вопрос";
 
         public void OpenOrangeMailboxPage()
         {
             browser.Navigate().GoToUrl(YANDEX);
+            //IWebElement UserName = browser.FindElement(By.Id(NAMEID));
+            //UserName.SendKeys();          
             //Run browser,
             // Navigate to the Yandex page,
             //Find the "New Mailbox" link
@@ -29,7 +42,27 @@ namespace OrangeMailbox
 
         public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretAnswer, string capcha)
         {
-            // Fill the fields with bogus and generated data
+            IWebElement UserName = browser.FindElement(By.Id(NAMEID));
+            UserName.SendKeys(name);
+
+            IWebElement LastName = browser.FindElement(By.Id(LASTNAMEID));
+            LastName.SendKeys(lastName);
+
+            IWebElement Login = browser.FindElement(By.Id(LOGINID));
+            Login.SendKeys(login);
+
+            IWebElement Password = browser.FindElement(By.Id(PASSWID));
+            Password.SendKeys(password);
+
+            IWebElement RepeatPassword = browser.FindElement(By.Id(PASSWIDCONFIRM));
+            RepeatPassword.SendKeys(password);
+            browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
+
+            IWebElement SecretAnswer = browser.FindElement(By.LinkText(HINTANSWERTEXT));
+            SecretAnswer.SendKeys(DataGenerator.CreateRandomString());
+
+            IWebElement FillCaptcha = browser.FindElement(By.Id(CAPTCHA));
+            FillCaptcha.SendKeys(capcha);
         }
 
         public void CloseOrangeMailboxPage()

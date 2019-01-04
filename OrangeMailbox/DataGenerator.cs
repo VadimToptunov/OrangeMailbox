@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace OrangeMailbox
 {
-    class DataGenerator
+    public static class DataGenerator
     {
-            static string CreateFullName()
+            public static string CreateFullName()
             {
                 string name = "";
                 string lastName = "";
@@ -19,7 +19,7 @@ namespace OrangeMailbox
                 return fullName;
                 //return name, lastName; 
             }
-            static string CreatePassword()
+            public static string CreateRandomString()
             {
                 RNGCryptoServiceProvider cryptRNG = new RNGCryptoServiceProvider();
                 byte[] tokenBuffer = new byte[12];
@@ -28,7 +28,7 @@ namespace OrangeMailbox
                 return password;
             }
 
-            static string CreateFakeData()
+            public static string CreateFakeData()
             {
                 //Create Fake data: name, last name, login;
                 string fakeData = "";
