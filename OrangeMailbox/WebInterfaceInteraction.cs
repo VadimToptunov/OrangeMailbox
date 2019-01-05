@@ -21,7 +21,7 @@ namespace OrangeMailbox
         const string NOPHONELINKTEXT = "У меня нет телефона";
         const string CAPTCHA = "captcha";
         const string SUBMITBUTTONTYPE = "submit";
-        //const string HINTqUESTION = "";
+        //const string HINTQUESTION = "";
         const string HINTANSWERTEXT = "Ответ на контрольный вопрос";
 
         public void OpenOrangeMailboxPage()
@@ -51,6 +51,7 @@ namespace OrangeMailbox
 
             IWebElement RepeatPassword = browser.FindElement(By.Id(PASSWIDCONFIRM));
             RepeatPassword.SendKeys(password);
+
             browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
 
             IWebElement SecretAnswer = browser.FindElement(By.LinkText(HINTANSWERTEXT));

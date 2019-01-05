@@ -30,12 +30,20 @@ namespace OrangeMailbox
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.GetEncoding(1251);
-            Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
-            int emails = EmailsAmount();
-            Console.WriteLine(emails);
-            string fileName = FileNameToSaveTheData();
-            Console.WriteLine(fileName);
+            CreateXlsDocument.CreateFile();
+            int Emails = EmailsAmount();
+            for (int i = 0; i < Emails; i++)
+            {
+
+            }
+
+            //Console.OutputEncoding = Encoding.GetEncoding(1251);
+            //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
+            //int emails = EmailsAmount();
+            //Console.WriteLine(emails);
+            //string fileName = FileNameToSaveTheData();
+            //Console.WriteLine(fileName);
+
             //Console.WriteLine(CreatePassword());
             //RunBrowser();
             //WriteToFile(FillCapcha());
