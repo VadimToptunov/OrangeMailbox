@@ -8,7 +8,7 @@ namespace OrangeMailbox
 {
     class OrangeMailboxCreator
     {
-         static int EmailsAmount()
+        static int EmailsAmount()
         {
             Console.WriteLine("How many e-mails do you need? \n");
             return int.Parse(Console.ReadLine());
@@ -30,13 +30,7 @@ namespace OrangeMailbox
 
         static void Main(string[] args)
         {
-            CreateXlsDocument.CreateFile();
-            int Emails = EmailsAmount();
-            for (int i = 0; i < Emails; i++)
-            {
-
-            }
-
+            CreateXlsDocument.CreateAndFillFile();
             //Console.OutputEncoding = Encoding.GetEncoding(1251);
             //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
             //int emails = EmailsAmount();

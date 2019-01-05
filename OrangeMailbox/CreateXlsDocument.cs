@@ -1,79 +1,78 @@
-﻿using Microsoft.Office.Core;
-using Excel = Microsoft.Office.Interop.Excel;
+﻿
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrangeMailbox
 {
     class CreateXlsDocument
     {
-        private static ExcelPackage excel;
-        static DateTime Date = DateTime.UtcNow.Date;
-        static String XlsFilename = Date.ToString("dd_MM_yyyy") + "_Mailboxes.xlsx";
-        static String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
-
-        public static void FileExists(String FilePath)
+        public static void CreateAndFillFile()
         {
-            Console.WriteLine(File.Exists(FilePath) ? String.Format("OK. The file %s exists.", FilePath) : String.Format("Error: The file %s does not exist.", FilePath));
-        }
+            List<CodeDetail> codeDetails = PopulateCodeDetails();
+            DateTime Date = DateTime.UtcNow.Date;
+            Random random = new Random();
+            String XlsFilename = Date.ToString("dd_MM_yyyy") + "_" + random.Next(12324).ToString() + "_Mailboxes.xlsx";
+            String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
+            FileInfo fileInfo = new FileInfo(FilePath);
 
-        public static void CreateFile()
-        {
-            using (excel = new ExcelPackage())
+            using (ExcelPackage excelPackage = new ExcelPackage(fileInfo))
             {
-                excel.Workbook.Worksheets.Add("Orange Mailboxes");
-
-                var headerRow = new List<string[]>()
-                {
-                    new string[] { "Date", "First Name", "Last Name", "Login", "Password", "Secret Question", "Secret Answer" }
-                };
-
-                // Determine the header range (e.g. A1:G1)
-                string headerRange = "A1:" + Char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
-
-                // Target a worksheet
-                var worksheet = excel.Workbook.Worksheets["Orange Mailboxes"];
-
-                // Popular header row data
-                worksheet.Cells[headerRange].LoadFromArrays(headerRow);
-                worksheet.Cells[headerRange].Style.Font.Bold = true;
-                worksheet.Cells[headerRange].Style.Font.Size = 14;
-                worksheet.Cells[headerRange].Style.Font.Color.SetColor(System.Drawing.Color.Black);
-
-                FileInfo excelFile = new FileInfo(FilePath);
-                excel.SaveAs(excelFile);
+                var workSheet = GetWorkSheet(excelPackage, 0);
+                workSheet.Cells["A2"].LoadFromCollection(codeDetails, false, OfficeOpenXml.Table.TableStyles.Medium14);
+                excelPackage.Save();
             }
         }
 
-        static void WriteDownUIntoFile(string date, string name, string lastName, string login, string passw, string secretQ, string secretA)
+        static ExcelWorksheet GetWorkSheet(ExcelPackage excelPackage, int count)
         {
-            //Write down information into the file specified file
-            var dataRow = new List<string[]>()
-                {
-                    new string[] { date, name, lastName, login, passw, secretQ, secretA }
-                };
+            var workSheet = excelPackage.Workbook.Worksheets.Add("Orange Mailboxes");
 
-            // Determine the header range (e.g. A1:G1)
-            string headerRange = "A1:" + Char.ConvertFromUtf32(dataRow[0].Length + 64) + "1";
-
-            // Target a worksheet
-            var worksheet = excel.Workbook.Worksheets["Orange Mailboxes"];
-
-            // Popular header row data
-            worksheet.Cells[headerRange].LoadFromArrays(dataRow);
+            workSheet.View.ShowGridLines = true;
+            workSheet.Cells["A1"].Value = "Date";
+            workSheet.Cells["B1"].Value = "First name";
+            workSheet.Cells["C1"].Value = "Last name";
+            workSheet.Cells["D1"].Value = "Login";
+            workSheet.Cells["E1"].Value = "Password";
+            workSheet.Cells["F1"].Value = "Secret Question";
+            workSheet.Cells["G1"].Value = "Secret Answer";
+            workSheet.Cells["A1:G1"].Style.Font.Bold = true;
+            workSheet.Cells["A1:G1"].AutoFitColumns();
+            //workSheet.Cells["A2:A100000"].AutoFitColumns();
+            return workSheet;
         }
 
-        public static void WriteToFile(string password)
+        public static List<CodeDetail> PopulateCodeDetails()
         {
-            StreamWriter SW = new StreamWriter(FilePath, false, Encoding.GetEncoding("windows-1251"));
-            SW.Write(password);
-            SW.Close();
-            SW.Dispose();
+            List<CodeDetail> codeDetails = new List<CodeDetail>();
+            Random random = new Random();
+            for (int i = 1; i <= 100; i++)
+            {
+                CodeDetail codeDetail = new CodeDetail();
+                codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
+                codeDetail.FirstName = random.Next(12324343).ToString();
+                codeDetail.LastName = random.Next(12324343).ToString();
+                codeDetail.Login = random.Next(12324343).ToString();
+                codeDetail.Password = random.Next(123243435).ToString();
+                codeDetail.SecretQuestion = random.Next(12324343).ToString();
+                codeDetail.SecretAnswer = random.Next(123).ToString();
+                codeDetails.Add(codeDetail);
+            }
+            return codeDetails;
         }
     }
+}
+
+    
+
+public class CodeDetail
+{
+    public string Date { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Login { get; set; }
+    public string Password { get; set; }
+    public string SecretQuestion { get; set; }
+    public string SecretAnswer { get; set; }
 }
