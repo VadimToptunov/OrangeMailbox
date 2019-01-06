@@ -14,24 +14,22 @@ namespace OrangeMailbox
             return int.Parse(Console.ReadLine());
         }
 
-        static string FileNameToSaveTheData()
-        {
-            Console.WriteLine("Now specify a folder or a file to save the information: \n");
-            return Console.ReadLine();
-        }
-
         static string FillCapcha()
         {
             Console.WriteLine("Please, write down the CAPTCHA value Here: \n");
             string capchaValue = Console.ReadLine();
-
             return capchaValue;
+        }
+
+        static void FillData()
+        {
+            // Take a list of Bogus Data and disassemble it into Name, Last name. etc. for filling out the forms
+            DataGenerator.CreateBogusData();
+            CreateXlsDocument.CreateAndFillFile();
         }
 
         static void Main(string[] args)
         {
-            DataGenerator.CreateBogusData();
-            CreateXlsDocument.CreateAndFillFile();
 
             //Console.OutputEncoding = Encoding.GetEncoding(1251);
             //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");

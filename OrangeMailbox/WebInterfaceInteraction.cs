@@ -12,7 +12,6 @@ namespace OrangeMailbox
     {
         IWebDriver browser;
         const string YANDEX = "https:///passport.yandex.ru//registration//mail?from=mail&origin=home_v14_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F";
-         
         const string NAMEID = "firstname";
         const string LASTNAMEID = "lastname";
         const string LOGINID = "login";
@@ -21,18 +20,13 @@ namespace OrangeMailbox
         const string NOPHONELINKTEXT = "У меня нет телефона";
         const string CAPTCHA = "captcha";
         const string SUBMITBUTTONTYPE = "submit";
-        //const string HINTQUESTION = "";
+        const string HINTQUESTION = "uniq$1";
         const string HINTANSWERTEXT = "Ответ на контрольный вопрос";
 
         public void OpenOrangeMailboxPage()
         {
             browser = new ChromeDriver();
             browser.Navigate().GoToUrl(YANDEX);
-        }
-
-        public void FindSecretQuestionAndChoose()
-        {
-            //FindSecretQuestionAndChoose()
         }
 
         public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretAnswer, string capcha)
@@ -53,6 +47,10 @@ namespace OrangeMailbox
             RepeatPassword.SendKeys(password);
 
             browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
+
+            IWebElement SecretQuestion = browser.FindElement(By.Id(HINTQUESTION));
+            SecretQuestion.Click();
+            //Get list of Questions and randomly choose one of them
 
             IWebElement SecretAnswer = browser.FindElement(By.LinkText(HINTANSWERTEXT));
             SecretAnswer.SendKeys(DataGenerator.CreateRandomString());
