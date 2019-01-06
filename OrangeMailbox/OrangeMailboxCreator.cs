@@ -30,7 +30,9 @@ namespace OrangeMailbox
 
         static void Main(string[] args)
         {
+            DataGenerator.CreateBogusData();
             CreateXlsDocument.CreateAndFillFile();
+
             //Console.OutputEncoding = Encoding.GetEncoding(1251);
             //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
             //int emails = EmailsAmount();
