@@ -21,6 +21,7 @@ namespace OrangeMailbox
             {
                 var workSheet = GetWorkSheet(excelPackage, 0);
                 workSheet.Cells["A2"].LoadFromCollection(codeDetails, false, OfficeOpenXml.Table.TableStyles.Medium14);
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                 excelPackage.Save();
             }
         }
@@ -28,7 +29,6 @@ namespace OrangeMailbox
         static ExcelWorksheet GetWorkSheet(ExcelPackage excelPackage, int count)
         {
             var workSheet = excelPackage.Workbook.Worksheets.Add("Orange Mailboxes");
-
             workSheet.View.ShowGridLines = true;
             workSheet.Cells["A1"].Value = "Date";
             workSheet.Cells["B1"].Value = "First name";
@@ -38,8 +38,7 @@ namespace OrangeMailbox
             workSheet.Cells["F1"].Value = "Secret Question";
             workSheet.Cells["G1"].Value = "Secret Answer";
             workSheet.Cells["A1:G1"].Style.Font.Bold = true;
-            workSheet.Cells["A1:G1"].AutoFitColumns();
-            //workSheet.Cells["A2:A100000"].AutoFitColumns();
+            workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             return workSheet;
         }
 
@@ -50,13 +49,15 @@ namespace OrangeMailbox
             for (int i = 1; i <= 100; i++)
             {
                 CodeDetail codeDetail = new CodeDetail();
+                List<string> generatedData = DataGenerator.CreateBogusData();
+                //TO DO: Remake it into a for loop
                 codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
-                codeDetail.FirstName = random.Next(12324343).ToString();
-                codeDetail.LastName = random.Next(12324343).ToString();
-                codeDetail.Login = random.Next(12324343).ToString();
-                codeDetail.Password = random.Next(123243435).ToString();
+                codeDetail.FirstName = generatedData[0];
+                codeDetail.LastName = generatedData[1];
+                codeDetail.Login = generatedData[2];
+                codeDetail.Password = generatedData[3];
                 codeDetail.SecretQuestion = random.Next(12324343).ToString();
-                codeDetail.SecretAnswer = random.Next(123).ToString();
+                codeDetail.SecretAnswer = generatedData[4];
                 codeDetails.Add(codeDetail);
             }
             return codeDetails;

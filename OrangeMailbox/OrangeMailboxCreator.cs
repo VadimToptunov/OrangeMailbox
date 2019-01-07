@@ -23,14 +23,12 @@ namespace OrangeMailbox
 
         static void FillData()
         {
-            // Take a list of Bogus Data and disassemble it into Name, Last name. etc. for filling out the forms
-            DataGenerator.CreateBogusData();
             CreateXlsDocument.CreateAndFillFile();
         }
 
         static void Main(string[] args)
         {
-
+            FillData();
             //Console.OutputEncoding = Encoding.GetEncoding(1251);
             //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
             //int emails = EmailsAmount();
