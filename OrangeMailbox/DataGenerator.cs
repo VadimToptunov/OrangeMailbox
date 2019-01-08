@@ -9,17 +9,22 @@ namespace OrangeMailbox
     {
         public static List<string> CreateBogusData()
         {
-            var faker = new Faker();
+            var faker = new Faker("ru");
             List<string> bogusData = new List<string>();
             bogusData.Add(faker.Person.FirstName);
             bogusData.Add(faker.Person.LastName);
-            bogusData.Add(faker.Person.UserName);
-            bogusData.Add(CreateRandomString()); // for password
+            bogusData.Add(BogusUsername());
+            bogusData.Add(faker.Internet.Password());
+            bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
+            //bogusData.Add(faker.Hacker.Noun());
             bogusData.Add(CreateRandomString()); //for secret answer
-
-            //string bogusCsv = string.Join(", ", bogusData.ToArray());
-            //Console.WriteLine(bogusCsv);
             return bogusData;
+        }
+
+        static string BogusUsername()
+        {
+            var bogus = new Faker();
+            return bogus.Internet.UserName();
         }
             public static string CreateRandomString()
             {

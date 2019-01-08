@@ -50,14 +50,13 @@ namespace OrangeMailbox
             {
                 CodeDetail codeDetail = new CodeDetail();
                 List<string> generatedData = DataGenerator.CreateBogusData();
-                //TO DO: Remake it into a for loop
                 codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
                 codeDetail.FirstName = generatedData[0];
                 codeDetail.LastName = generatedData[1];
                 codeDetail.Login = generatedData[2];
                 codeDetail.Password = generatedData[3];
-                codeDetail.SecretQuestion = random.Next(12324343).ToString();
-                codeDetail.SecretAnswer = generatedData[4];
+                codeDetail.SecretQuestion = generatedData[4];
+                codeDetail.SecretAnswer = generatedData[5];
                 codeDetails.Add(codeDetail);
             }
             return codeDetails;

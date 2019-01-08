@@ -10,7 +10,7 @@ namespace OrangeMailbox
 {
     class WebInterfaceInteraction
     {
-        IWebDriver browser;
+        public static IWebDriver browser;
         const string YANDEX = "https:///passport.yandex.ru//registration//mail?from=mail&origin=home_v14_ru&retpath=https%3A%2F%2Fmail.yandex.ru%2F";
         const string NAMEID = "firstname";
         const string LASTNAMEID = "lastname";
@@ -23,13 +23,33 @@ namespace OrangeMailbox
         const string HINTQUESTION = "uniq$1";
         const string HINTANSWERTEXT = "Ответ на контрольный вопрос";
 
-        public void OpenOrangeMailboxPage()
+        public static void OpenOrangeMailboxPage()
         {
             browser = new ChromeDriver();
             browser.Navigate().GoToUrl(YANDEX);
         }
 
-        public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretAnswer, string capcha)
+        public static string GetSecretQuestion()
+        {
+            //browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
+
+            //List<string> listOfSecretQuestions = new List<string>();
+            //Random random = new Random();
+            //int index = random.Next(listOfSecretQuestions.Count);
+            //string secretQuestion = listOfSecretQuestions[index];
+            string secretQuestion = "Рандомный секретный вопрос";
+            return secretQuestion;
+        }
+
+        public static void ChooseSecretQuestion(string secretQuestion)
+        {
+            //GetSecretQuestion();
+            // here should be used a secret question
+            IWebElement SecretQuestion = browser.FindElement(By.Id(HINTQUESTION));
+            SecretQuestion.Click();
+        } 
+
+        public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretQuestion, string secretAnswer, string capcha)
         {
             IWebElement UserName = browser.FindElement(By.Id(NAMEID));
             UserName.SendKeys(name);
@@ -46,11 +66,7 @@ namespace OrangeMailbox
             IWebElement RepeatPassword = browser.FindElement(By.Id(PASSWIDCONFIRM));
             RepeatPassword.SendKeys(password);
 
-            browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
-
-            IWebElement SecretQuestion = browser.FindElement(By.Id(HINTQUESTION));
-            SecretQuestion.Click();
-            //Get list of Questions and randomly choose one of them
+            ChooseSecretQuestion(secretQuestion);
 
             IWebElement SecretAnswer = browser.FindElement(By.LinkText(HINTANSWERTEXT));
             SecretAnswer.SendKeys(DataGenerator.CreateRandomString());
@@ -59,9 +75,8 @@ namespace OrangeMailbox
             FillCaptcha.SendKeys(capcha);
         }
 
-        public void CloseOrangeMailboxPage()
+        public static void CloseOrangeMailboxPage()
         {
-            Console.ReadLine();
             browser.Close();
         }
     }
