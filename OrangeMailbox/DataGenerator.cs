@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -11,13 +12,14 @@ namespace OrangeMailbox
         {
             var faker = new Faker("ru");
             List<string> bogusData = new List<string>();
-            bogusData.Add(faker.Person.FirstName);
-            bogusData.Add(faker.Person.LastName);
+
+            bogusData.Add(faker.Name.FirstName());
+            bogusData.Add(faker.Name.LastName());
             bogusData.Add(BogusUsername());
             bogusData.Add(faker.Internet.Password());
             bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
-            //bogusData.Add(faker.Hacker.Noun());
-            bogusData.Add(CreateRandomString()); //for secret answer
+            bogusData.Add(faker.Name.LastName(Name.Gender.Female));
+            
             return bogusData;
         }
 

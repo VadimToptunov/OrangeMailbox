@@ -33,11 +33,10 @@ namespace OrangeMailbox
         {
             //browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
 
-            //List<string> listOfSecretQuestions = new List<string>();
-            //Random random = new Random();
-            //int index = random.Next(listOfSecretQuestions.Count);
+            List<string> listOfSecretQuestions = new List<string>();
+            // Find a question "Девичья фамилия матери"
             //string secretQuestion = listOfSecretQuestions[index];
-            string secretQuestion = "Рандомный секретный вопрос";
+            //string secretQuestion = "Девичья фамилия матери";
             return secretQuestion;
         }
 
