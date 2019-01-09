@@ -46,32 +46,35 @@ namespace OrangeMailbox
             // here should be used a secret question
             IWebElement SecretQuestion = browser.FindElement(By.Id(HINTQUESTION));
             SecretQuestion.Click();
-        } 
+        }
+           
+
+        static void SetElementData(string elementID, string elementData)
+        {
+            try
+            {
+                browser.FindElement(By.Id(elementID)).SendKeys(elementData);
+            }
+            catch (NoSuchElementException exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+
 
         public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretQuestion, string secretAnswer, string capcha)
         {
-            IWebElement UserName = browser.FindElement(By.Id(NAMEID));
-            UserName.SendKeys(name);
-
-            IWebElement LastName = browser.FindElement(By.Id(LASTNAMEID));
-            LastName.SendKeys(lastName);
-
-            IWebElement Login = browser.FindElement(By.Id(LOGINID));
-            Login.SendKeys(login);
-
-            IWebElement Password = browser.FindElement(By.Id(PASSWID));
-            Password.SendKeys(password);
-
-            IWebElement RepeatPassword = browser.FindElement(By.Id(PASSWIDCONFIRM));
-            RepeatPassword.SendKeys(password);
+            SetElementData(NAMEID, name);
+            SetElementData(LASTNAMEID, lastName);
+            SetElementData(LOGINID, login);
+            SetElementData(PASSWID, password);
+            SetElementData(PASSWIDCONFIRM, password);
 
             ChooseSecretQuestion(secretQuestion);
 
-            IWebElement SecretAnswer = browser.FindElement(By.LinkText(HINTANSWERTEXT));
-            SecretAnswer.SendKeys(DataGenerator.CreateRandomString());
-
-            IWebElement FillCaptcha = browser.FindElement(By.Id(CAPTCHA));
-            FillCaptcha.SendKeys(capcha);
+            browser.FindElement(By.LinkText(HINTANSWERTEXT)).SendKeys(DataGenerator.CreateRandomString());
+        
+            SetElementData(CAPTCHA, capcha);
         }
 
         public static void CloseOrangeMailboxPage()
