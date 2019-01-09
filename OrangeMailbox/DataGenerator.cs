@@ -13,8 +13,8 @@ namespace OrangeMailbox
             var faker = new Faker("ru");
             List<string> bogusData = new List<string>();
 
-            bogusData.Add(faker.Name.FirstName());
-            bogusData.Add(faker.Name.LastName());
+            bogusData.Add(faker.Person.FirstName);
+            bogusData.Add(faker.Person.LastName);
             bogusData.Add(BogusUsername());
             bogusData.Add(faker.Internet.Password());
             bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());

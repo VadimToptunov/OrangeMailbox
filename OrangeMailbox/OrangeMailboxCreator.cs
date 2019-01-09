@@ -8,7 +8,14 @@ namespace OrangeMailbox
 {
     class OrangeMailboxCreator
     {
-        static int EmailsAmount()
+        static void Disclaimer()
+        {
+            string disclaimer = "\t\t\t\tDear user! \n" +
+                "\t\tYou\'re using a program for mass-creation of mailboxes for one Yellow//Orange Search Engine. \n" +
+                "\t\tPlease, follow the instructions below.\n\n";
+            Console.WriteLine(disclaimer);
+        }
+        public static int EmailsAmount()
         {
             Console.WriteLine("How many e-mails do you need? \n");
             return int.Parse(Console.ReadLine());
@@ -21,24 +28,24 @@ namespace OrangeMailbox
             return capchaValue;
         }
 
-        static void FillData()
+        static void FillDataInDocument()
         {
             CreateXlsDocument.CreateAndFillFile();
         }
 
+        static void PerformActions()
+        {
+            //Method for all Actions, instead of Main
+            Disclaimer();
+            FillDataInDocument();
+            string capcha = FillCapcha();
+            //Console.WriteLine(capcha);
+        }
+
         static void Main(string[] args)
         {
-            FillData();
-            //Console.OutputEncoding = Encoding.GetEncoding(1251);
-            //Console.WriteLine("Hello, now you gonna create some e-mails in Yandex!\n");
-            //int emails = EmailsAmount();
-            //Console.WriteLine(emails);
-            //string fileName = FileNameToSaveTheData();
-            //Console.WriteLine(fileName);
+            PerformActions();
 
-            //Console.WriteLine(CreatePassword());
-            //RunBrowser();
-            //WriteToFile(FillCapcha());
             Console.ReadLine();
         }
     }

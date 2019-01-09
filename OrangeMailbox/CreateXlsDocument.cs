@@ -45,8 +45,9 @@ namespace OrangeMailbox
         public static List<CodeDetail> PopulateCodeDetails()
         {
             List<CodeDetail> codeDetails = new List<CodeDetail>();
-            Random random = new Random();
-            for (int i = 1; i <= 100; i++)
+
+            int amount = OrangeMailboxCreator.EmailsAmount();
+            for (int i = 1; i <= amount; i++)
             {
                 CodeDetail codeDetail = new CodeDetail();
                 List<string> generatedData = DataGenerator.CreateBogusData();

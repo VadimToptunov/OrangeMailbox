@@ -36,7 +36,7 @@ namespace OrangeMailbox
             List<string> listOfSecretQuestions = new List<string>();
             // Find a question "Девичья фамилия матери"
             //string secretQuestion = listOfSecretQuestions[index];
-            //string secretQuestion = "Девичья фамилия матери";
+            string secretQuestion = "Девичья фамилия матери";
             return secretQuestion;
         }
 
