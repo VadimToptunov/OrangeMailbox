@@ -36,9 +36,10 @@ namespace OrangeMailbox
         static void PerformActions()
         {
             //Method for all Actions, instead of Main
-            Disclaimer();
-            FillDataInDocument();
-            string capcha = FillCapcha();
+            //Disclaimer();
+            //FillDataInDocument();
+            WebInterfaceInteraction.WebActions();
+            //string capcha = FillCapcha();
             //Console.WriteLine(capcha);
         }
 
