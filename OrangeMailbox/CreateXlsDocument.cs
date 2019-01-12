@@ -13,7 +13,7 @@ namespace OrangeMailbox
             List<CodeDetail> codeDetails = PopulateCodeDetails(bogusData);
             DateTime Date = DateTime.UtcNow.Date;
             Random random = new Random();
-            String XlsFilename = String.Format("{0}_{1}_Mailboxes.xlsx", Date.ToString("dd:MM:yyyy"), random.Next(1234567890).ToString());
+            String XlsFilename = String.Format("{0}_{1}_Mailboxes.xlsx", Date.ToString("dd-MM-yyyy"), random.Next(1234567890).ToString());
             String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
             FileInfo fileInfo = new FileInfo(FilePath);
 

@@ -113,6 +113,7 @@ namespace OrangeMailbox
             SetElementData(NAMEID, name);
             SetElementData(LASTNAMEID, lastName);
             SetElementData(LOGINID, login);
+            //Check no errors appear
             SetElementData(PASSWID, password);
             SetElementData(PASSWIDCONFIRM, password);
             FindNoPhone();
@@ -128,7 +129,13 @@ namespace OrangeMailbox
             //SetElementData(PASSWID, "lFdHppiuhg8734");
         }
 
-        public static Boolean CheckMailBoxCreated()
+        public static bool CheckNoErrorsAppear()
+        {
+            //Use ternary operator
+            return true;
+        } 
+
+        public static bool CheckMailBoxCreated()
         {
             //Check the mailbox is successfully created
             // Use ternary operator  
