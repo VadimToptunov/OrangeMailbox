@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrangeMailbox
 {
@@ -26,11 +23,6 @@ namespace OrangeMailbox
             Console.WriteLine("Please, write down the CAPTCHA value Here: \n");
             string capchaValue = Console.ReadLine();
             return capchaValue;
-        }
-
-        static void FillDataInDocument()
-        {
-            CreateXlsDocument.CreateAndFillFile();
         }
 
         static void PerformActions()

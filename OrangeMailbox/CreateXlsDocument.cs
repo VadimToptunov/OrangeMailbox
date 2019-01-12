@@ -8,12 +8,12 @@ namespace OrangeMailbox
 {
     class CreateXlsDocument
     {
-        public static void CreateAndFillFile()
+        public static void CreateAndFillFile(List<string> bogusData)
         {
-            List<CodeDetail> codeDetails = PopulateCodeDetails();
+            List<CodeDetail> codeDetails = PopulateCodeDetails(bogusData);
             DateTime Date = DateTime.UtcNow.Date;
             Random random = new Random();
-            String XlsFilename = Date.ToString("dd_MM_yyyy") + "_" + random.Next(12324).ToString() + "_Mailboxes.xlsx";
+            String XlsFilename = String.Format("{0}_{1}_Mailboxes.xlsx", Date.ToString("dd:MM:yyyy"), random.Next(1234567890).ToString());
             String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
             FileInfo fileInfo = new FileInfo(FilePath);
 
@@ -42,15 +42,16 @@ namespace OrangeMailbox
             return workSheet;
         }
 
-        public static List<CodeDetail> PopulateCodeDetails()
+        public static List<CodeDetail> PopulateCodeDetails(List<string> bogusData)
         {
             List<CodeDetail> codeDetails = new List<CodeDetail>();
 
             int amount = OrangeMailboxCreator.EmailsAmount();
+            //Something strange should be here
             for (int i = 1; i <= amount; i++)
             {
                 CodeDetail codeDetail = new CodeDetail();
-                List<string> generatedData = DataGenerator.CreateBogusData();
+                List<string> generatedData = bogusData;
                 codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
                 codeDetail.FirstName = generatedData[0];
                 codeDetail.LastName = generatedData[1];
@@ -66,7 +67,6 @@ namespace OrangeMailbox
 }
 
     
-
 public class CodeDetail
 {
     public string Date { get; set; }

@@ -3,10 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OrangeMailbox
 {
@@ -36,21 +33,6 @@ namespace OrangeMailbox
             browser = new ChromeDriver();
             browser.Navigate().GoToUrl(YANDEX);
             browser.Navigate().Refresh();
-
-            FindElementByLinkText("Завести почту");
-            SetElementData(NAMEID, "Вася");
-            SetElementData(LASTNAMEID, "Пупкин");
-            SetElementData(LOGINID, "Pupkus87");
-            SetElementData(PASSWID, "lFdHppiuhg8734");
-            SetElementData(PASSWIDCONFIRM, "lFdHppiuhg8734");
-            FindNoPhone();
-            //Thread.Sleep(5000);
-
-            IWebElement hintAnswer = browser.FindElement(By.Id(HINTANSWERID));
-            ScrollDownToElement(hintAnswer);
-            hintAnswer.SendKeys(DataGenerator.CreateRandomString());
-            
-            Console.ReadLine();
         }
 
         static void FindNoPhone()
@@ -78,9 +60,9 @@ namespace OrangeMailbox
             //browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
 
             List<string> listOfSecretQuestions = new List<string>();
-            // Find a question "Девичья фамилия матери"
+            // Find a question "Фамилия вашего любимого музыканта"
             //string secretQuestion = listOfSecretQuestions[index];
-            string secretQuestion = "Фамилия вашего любимого музыканта";
+            string secretQuestion = "Фамилия вашего любимого учителя";
             return secretQuestion;
         }
 
@@ -117,22 +99,40 @@ namespace OrangeMailbox
         }
 
 
-        public void FillFormsOnOrangeMailboxPage(string name, string lastName, string login, string password, string secretQuestion, string secretAnswer, string capcha)
+        public static void FillFormsOnOrangeMailboxPage(List<string> bogusData)
         {
             browser.FindElement(By.LinkText("Завести почту")).Click();
 
-
+            List<string> generatedData = bogusData;
+            string name = generatedData[0];
+            string lastName = generatedData[1];
+            string login = generatedData[2];
+            string password = generatedData[3];
+            string secretQuestion = generatedData[4];
+            string secretAnswer = generatedData[5];
             SetElementData(NAMEID, name);
             SetElementData(LASTNAMEID, lastName);
             SetElementData(LOGINID, login);
             SetElementData(PASSWID, password);
             SetElementData(PASSWIDCONFIRM, password);
-
+            FindNoPhone();
             //ChooseSecretQuestion(secretQuestion);
+            IWebElement hintAnswer = browser.FindElement(By.Id(HINTANSWERID));
+            ScrollDownToElement(hintAnswer);
+            Thread.Sleep(20000); 
+            // Sleep to fill Capcha
+            CreateXlsDocument.CreateAndFillFile(bogusData);
+            //Click "Submit"
+            //Check the mailbox is successfully created
 
-            //browser.FindElement(By.LinkText(HINTANSWERTEXT)).SendKeys(DataGenerator.CreateRandomString());
-        
-            SetElementData(CAPTCHA, capcha);
+            //SetElementData(PASSWID, "lFdHppiuhg8734");
+        }
+
+        public static Boolean CheckMailBoxCreated()
+        {
+            //Check the mailbox is successfully created
+            // Use ternary operator  
+            return true;
         }
 
         public static void CloseOrangeMailboxPage()
@@ -144,11 +144,7 @@ namespace OrangeMailbox
         public static void WebActions()
         {
             OpenOrangeMailboxPage();
-            //SetElementData(NAMEID, "Вася");
-            //SetElementData(LASTNAMEID, "Пупкин");
-            //SetElementData(LOGINID, "Pupkus_87");
-            //SetElementData(PASSWID, "lFdHppiuhg8734");
-            //SetElementData(PASSWIDCONFIRM, "lFdHppiuhg8734");
+            FillFormsOnOrangeMailboxPage(DataGenerator.CreateBogusData());
             CloseOrangeMailboxPage();
         }
     }

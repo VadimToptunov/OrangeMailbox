@@ -1,8 +1,5 @@
 ﻿using Bogus;
-using Bogus.DataSets;
-using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace OrangeMailbox
 {
@@ -18,8 +15,7 @@ namespace OrangeMailbox
             bogusData.Add(BogusUsername());
             bogusData.Add(faker.Internet.Password());
             bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
-            bogusData.Add(faker.Name.LastName(Name.Gender.Female));
-            
+            bogusData.Add(faker.Name.LastName());
             return bogusData;
         }
 
@@ -28,13 +24,5 @@ namespace OrangeMailbox
             var bogus = new Faker();
             return bogus.Internet.UserName();
         }
-            public static string CreateRandomString()
-            {
-                RNGCryptoServiceProvider cryptRNG = new RNGCryptoServiceProvider();
-                byte[] tokenBuffer = new byte[12];
-                cryptRNG.GetBytes(tokenBuffer);
-                string password = Convert.ToBase64String(tokenBuffer);
-                return password;
-            }
-        }
+    }
 }
