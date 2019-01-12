@@ -14,15 +14,16 @@ namespace OrangeMailbox
             bogusData.Add(faker.Person.LastName);
             bogusData.Add(BogusUsername());
             bogusData.Add(faker.Internet.Password());
-            bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
+            bogusData.Add("Фамилия вашего любимого учителя");
+            //bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
             bogusData.Add(faker.Name.LastName());
             return bogusData;
         }
 
-        static string BogusUsername()
+        public static string BogusUsername()
         {
             var bogus = new Faker();
-            return bogus.Internet.UserName();
+            return bogus.Internet.UserName().Replace("_", ".");
         }
     }
 }

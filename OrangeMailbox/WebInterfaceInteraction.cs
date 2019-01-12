@@ -18,11 +18,11 @@ namespace OrangeMailbox
         const string PASSWID = "password";
         const string PASSWIDCONFIRM = "password_confirm";
         const string NOPHONELINKXPATH = "//*[@class='toggle-link link_has-no-phone']";
-        
-        const string CAPTCHA = "captcha";
+        const string HINTQUESTIONXPATH = "//*[@class='button2 button2_size_m button2_theme_normal control-questions button2_width_max select2__button select2__button']";
         const string SUBMITBUTTONTYPE = "submit";
         const string HINTQUESTION = "Фамилия вашего любимого учителя";
         const string HINTANSWERID = "hint_answer";
+        const string ERRORXPATH = "//*[@class='suggest__status-text error-message']"; 
 
         public static void OpenOrangeMailboxPage()
         {
@@ -55,22 +55,21 @@ namespace OrangeMailbox
             actions.Perform();
         }
 
-        public static string GetSecretQuestion()
-        {
-            //browser.FindElement(By.LinkText(NOPHONELINKTEXT)).Click();
-
-            List<string> listOfSecretQuestions = new List<string>();
-            // Find a question "Фамилия вашего любимого музыканта"
-            //string secretQuestion = listOfSecretQuestions[index];
-            string secretQuestion = "Фамилия вашего любимого учителя";
-            return secretQuestion;
-        }
-
         public static void ChooseSecretQuestion()
         {
+            try
+            {
+                browser.FindElement(By.XPath(HINTQUESTIONXPATH)).Click();
+                //browser.FindElement(By.XPath("//*[@class='menu__text']")).Click();
+
+            }
+            catch (NoSuchElementException exception)
+            {
+                Console.WriteLine(String.Format("Cannot find the element^ {0}", exception));
+            }
             //GetSecretQuestion();
             // here should be used a secret question
-            browser.FindElement(By.LinkText(HINTQUESTION)).Click();
+            //browser.FindElement(By.LinkText(HINTQUESTION)).Click();
         }
            
 
@@ -116,10 +115,14 @@ namespace OrangeMailbox
             //Check no errors appear
             SetElementData(PASSWID, password);
             SetElementData(PASSWIDCONFIRM, password);
+            CheckNoErrorsAppear();
             FindNoPhone();
-            //ChooseSecretQuestion(secretQuestion);
+
+            ChooseSecretQuestion();
+
             IWebElement hintAnswer = browser.FindElement(By.Id(HINTANSWERID));
             ScrollDownToElement(hintAnswer);
+            hintAnswer.SendKeys(secretAnswer);
             Thread.Sleep(20000); 
             // Sleep to fill Capcha
             CreateXlsDocument.CreateAndFillFile(bogusData);
@@ -129,10 +132,19 @@ namespace OrangeMailbox
             //SetElementData(PASSWID, "lFdHppiuhg8734");
         }
 
-        public static bool CheckNoErrorsAppear()
+        public static void CheckNoErrorsAppear()
         {
-            //Use ternary operator
-            return true;
+            try
+            {
+                IWebElement error = browser.FindElement(By.XPath(ERRORXPATH));
+                while (error.Displayed)
+                {
+                    browser.FindElement(By.Id(LOGINID)).Clear();
+                    SetElementData(LOGINID, DataGenerator.BogusUsername());
+                    Thread.Sleep(3000);
+                }
+            }
+            catch (NoSuchElementException exception){}
         } 
 
         public static bool CheckMailBoxCreated()

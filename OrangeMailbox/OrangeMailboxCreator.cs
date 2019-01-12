@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OrangeMailbox
 {
@@ -15,6 +16,7 @@ namespace OrangeMailbox
         public static int EmailsAmount()
         {
             Console.WriteLine("How many e-mails do you need? \n");
+            int answer = int.Parse(Console.ReadLine()); ;
             return int.Parse(Console.ReadLine());
         }
 
