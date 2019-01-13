@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,10 +20,13 @@ namespace OrangeMailbox
         const string PASSWIDCONFIRM = "password_confirm";
         const string NOPHONELINKXPATH = "//*[@class='toggle-link link_has-no-phone']";
         const string HINTQUESTIONXPATH = "//*[@class='button2 button2_size_m button2_theme_normal control-questions button2_width_max select2__button select2__button']";
-        const string SUBMITBUTTONTYPE = "submit";
+        const string SUBMITBUTTONXPATH = "//*[@class='button2 button2_size_l button2_theme_action button2_width_max button2_type_submit js-submit']";
         const string HINTQUESTION = "Фамилия вашего любимого учителя";
         const string HINTANSWERID = "hint_answer";
-        const string ERRORXPATH = "//*[@class='suggest__status-text error-message']"; 
+        const string ERRORXPATH = "//*[@class='suggest__status-text error-message']";
+        const string HINTMENU = "//*[@class='menu menu_size_m menu_width_max menu_theme_normal control-questions menu_type_radio select2__menu select2__menu']";
+        const string CAPCHALINE = "//*[@class='registration__label']";
+
 
         public static void OpenOrangeMailboxPage()
         {
@@ -33,19 +37,6 @@ namespace OrangeMailbox
             browser = new ChromeDriver();
             browser.Navigate().GoToUrl(YANDEX);
             browser.Navigate().Refresh();
-        }
-
-        static void FindNoPhone()
-        {
-            try
-            {
-                IWebElement noPhone = browser.FindElement(By.XPath(NOPHONELINKXPATH));
-                noPhone.Click();
-            }
-            catch (NoSuchElementException exception)
-            {
-                Console.WriteLine(String.Format("The element you search cannot be found: {0} \n\n", exception));
-            }
         }
 
         static void ScrollDownToElement(IWebElement element)
@@ -59,17 +50,25 @@ namespace OrangeMailbox
         {
             try
             {
-                browser.FindElement(By.XPath(HINTQUESTIONXPATH)).Click();
-                //browser.FindElement(By.XPath("//*[@class='menu__text']")).Click();
-
+                FindByXPathAndClick(HINTQUESTIONXPATH);
+                IWebElement menu = browser.FindElement(By.XPath(HINTMENU));
+                if (menu.Displayed)
+                {
+                    IReadOnlyCollection<IWebElement> menuItems = menu.FindElements(By.TagName("span"));
+                    foreach (IWebElement menuItem in menuItems)
+                    {
+                        if (menuItem.Text.Equals(HINTQUESTION))
+                        {
+                            menuItem.Click();
+                            break;
+                        }
+                    }
+                }
             }
             catch (NoSuchElementException exception)
             {
                 Console.WriteLine(String.Format("Cannot find the element^ {0}", exception));
             }
-            //GetSecretQuestion();
-            // here should be used a secret question
-            //browser.FindElement(By.LinkText(HINTQUESTION)).Click();
         }
            
 
@@ -97,6 +96,19 @@ namespace OrangeMailbox
             }
         }
 
+        static void FindByXPathAndClick(string xpath)
+        {
+            try
+            {
+                browser.FindElement(By.XPath(xpath)).Click();
+            }
+            catch (NoSuchElementException exception)
+            {
+                Console.WriteLine(String.Format("Failed to find the element: {0} \n\n", exception ));
+            }
+            
+        }
+
 
         public static void FillFormsOnOrangeMailboxPage(List<string> bogusData)
         {
@@ -116,18 +128,22 @@ namespace OrangeMailbox
             SetElementData(PASSWID, password);
             SetElementData(PASSWIDCONFIRM, password);
             CheckNoErrorsAppear();
-            FindNoPhone();
+            FindByXPathAndClick(NOPHONELINKXPATH);
 
             ChooseSecretQuestion();
-
+            Thread.Sleep(1000);
             IWebElement hintAnswer = browser.FindElement(By.Id(HINTANSWERID));
             ScrollDownToElement(hintAnswer);
             hintAnswer.SendKeys(secretAnswer);
-            Thread.Sleep(20000); 
+            IWebElement submitButton = browser.FindElement(By.XPath(SUBMITBUTTONXPATH));
+            ScrollDownToElement(submitButton);
+            Thread.Sleep(20000);
             // Sleep to fill Capcha
+            FindByXPathAndClick(SUBMITBUTTONXPATH);
+            
             CreateXlsDocument.CreateAndFillFile(bogusData);
-            //Click "Submit"
             //Check the mailbox is successfully created
+            //Check class="mail-User-Name" Contains the username!
 
             //SetElementData(PASSWID, "lFdHppiuhg8734");
         }
@@ -164,6 +180,7 @@ namespace OrangeMailbox
         {
             OpenOrangeMailboxPage();
             FillFormsOnOrangeMailboxPage(DataGenerator.CreateBogusData());
+            Console.ReadLine();
             CloseOrangeMailboxPage();
         }
     }

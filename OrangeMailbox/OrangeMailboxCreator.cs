@@ -17,31 +17,25 @@ namespace OrangeMailbox
         {
             Console.WriteLine("How many e-mails do you need? \n");
             int answer = int.Parse(Console.ReadLine()); ;
-            return int.Parse(Console.ReadLine());
-        }
-
-        static string FillCapcha()
-        {
-            Console.WriteLine("Please, write down the CAPTCHA value Here: \n");
-            string capchaValue = Console.ReadLine();
-            return capchaValue;
+            return answer;
         }
 
         static void PerformActions()
         {
-            //Method for all Actions, instead of Main
-            //Disclaimer();
-            //FillDataInDocument();
-            WebInterfaceInteraction.WebActions();
-            //string capcha = FillCapcha();
-            //Console.WriteLine(capcha);
+            Disclaimer();
+            int amount = EmailsAmount();
+            Thread.Sleep(10000);
+            for (int i = 1; i <= amount; i++)
+            {
+                WebInterfaceInteraction.WebActions();
+            }
         }
 
         static void Main(string[] args)
         {
             PerformActions();
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }

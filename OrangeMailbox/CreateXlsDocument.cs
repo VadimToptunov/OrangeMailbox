@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace OrangeMailbox
 {
@@ -45,22 +46,16 @@ namespace OrangeMailbox
         public static List<CodeDetail> PopulateCodeDetails(List<string> bogusData)
         {
             List<CodeDetail> codeDetails = new List<CodeDetail>();
-
-            int amount = OrangeMailboxCreator.EmailsAmount();
-            //Something strange should be here
-            for (int i = 1; i <= amount; i++)
-            {
-                CodeDetail codeDetail = new CodeDetail();
-                List<string> generatedData = bogusData;
-                codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
-                codeDetail.FirstName = generatedData[0];
-                codeDetail.LastName = generatedData[1];
-                codeDetail.Login = generatedData[2];
-                codeDetail.Password = generatedData[3];
-                codeDetail.SecretQuestion = generatedData[4];
-                codeDetail.SecretAnswer = generatedData[5];
-                codeDetails.Add(codeDetail);
-            }
+            CodeDetail codeDetail = new CodeDetail();
+            List<string> generatedData = bogusData;
+            codeDetail.Date = DateTime.UtcNow.Date.ToString("dd/MM/yyyy");
+            codeDetail.FirstName = generatedData[0];
+            codeDetail.LastName = generatedData[1];
+            codeDetail.Login = generatedData[2];
+            codeDetail.Password = generatedData[3];
+            codeDetail.SecretQuestion = generatedData[4];
+            codeDetail.SecretAnswer = generatedData[5];
+            codeDetails.Add(codeDetail);
             return codeDetails;
         }
     }

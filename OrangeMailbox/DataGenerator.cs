@@ -15,7 +15,6 @@ namespace OrangeMailbox
             bogusData.Add(BogusUsername());
             bogusData.Add(faker.Internet.Password());
             bogusData.Add("Фамилия вашего любимого учителя");
-            //bogusData.Add(WebInterfaceInteraction.GetSecretQuestion());
             bogusData.Add(faker.Name.LastName());
             return bogusData;
         }
