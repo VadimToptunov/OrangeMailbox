@@ -25,10 +25,7 @@ namespace OrangeMailbox
             Disclaimer();
             int amount = EmailsAmount();
             Thread.Sleep(10000);
-            for (int i = 1; i <= amount; i++)
-            {
-                WebInterfaceInteraction.WebActions();
-            }
+            WebInterfaceInteraction.WebActions(amount);
         }
 
         static void Main(string[] args)

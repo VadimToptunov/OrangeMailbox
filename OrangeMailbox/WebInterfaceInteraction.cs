@@ -26,6 +26,7 @@ namespace OrangeMailbox
         const string ERRORXPATH = "//*[@class='suggest__status-text error-message']";
         const string HINTMENU = "//*[@class='menu menu_size_m menu_width_max menu_theme_normal control-questions menu_type_radio select2__menu select2__menu']";
         const string CAPCHALINE = "//*[@class='registration__label']";
+        public static string UserNameClass = "//*[@class='mail-User-Name']";
 
 
         public static void OpenOrangeMailboxPage()
@@ -110,7 +111,7 @@ namespace OrangeMailbox
         }
 
 
-        public static void FillFormsOnOrangeMailboxPage(List<string> bogusData)
+        public static void FillFormsOnOrangeMailboxPage(List<string> bogusData, int amount)
         {
             browser.FindElement(By.LinkText("Завести почту")).Click();
 
@@ -137,15 +138,8 @@ namespace OrangeMailbox
             hintAnswer.SendKeys(secretAnswer);
             IWebElement submitButton = browser.FindElement(By.XPath(SUBMITBUTTONXPATH));
             ScrollDownToElement(submitButton);
-            Thread.Sleep(20000);
-            // Sleep to fill Capcha
-            FindByXPathAndClick(SUBMITBUTTONXPATH);
             
-            CreateXlsDocument.CreateAndFillFile(bogusData);
-            //Check the mailbox is successfully created
-            //Check class="mail-User-Name" Contains the username!
-
-            //SetElementData(PASSWID, "lFdHppiuhg8734");
+            CreateXlsDocument.CreateAndFillFile(bogusData, amount);
         }
 
         public static void CheckNoErrorsAppear()
@@ -161,13 +155,30 @@ namespace OrangeMailbox
                 }
             }
             catch (NoSuchElementException exception){}
-        } 
+        }
 
-        public static bool CheckMailBoxCreated()
+        public static bool CheckMailBoxCreated(string login)
         {
-            //Check the mailbox is successfully created
-            // Use ternary operator  
-            return true;
+            //Unable to locate element
+            //Make it wait!
+            if (!browser.FindElement(By.XPath(UserNameClass)).Displayed && !browser.FindElement(By.XPath(UserNameClass)).Text.Equals(login))
+            {
+                return false;
+            }
+            else{
+                Console.WriteLine(String.Format("The e-mail for the user {0} is successfully created!", login));
+                Thread.Sleep(3000);
+                CloseOrangeMailboxPage();
+                return true;
+            }
+        }
+
+        public static void CheckMailboxState(string login)
+        {
+            while (!CheckMailBoxCreated(login).Equals(true))
+            {
+                Thread.Sleep(1000);
+            }
         }
 
         public static void CloseOrangeMailboxPage()
@@ -176,12 +187,12 @@ namespace OrangeMailbox
             browser.Quit();
         }
 
-        public static void WebActions()
+        public static void WebActions(int amount)
         {
             OpenOrangeMailboxPage();
-            FillFormsOnOrangeMailboxPage(DataGenerator.CreateBogusData());
-            Console.ReadLine();
-            CloseOrangeMailboxPage();
+            List<string> bogusData = DataGenerator.CreateBogusData();
+            FillFormsOnOrangeMailboxPage(bogusData, amount);
+            CheckMailboxState(bogusData[2]);
         }
     }
 }
