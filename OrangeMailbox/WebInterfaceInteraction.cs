@@ -157,28 +157,16 @@ namespace OrangeMailbox
             catch (NoSuchElementException exception){}
         }
 
-        public static bool CheckMailBoxCreated(string login)
+        public static void CheckMailBoxCreated(string login)
         {
-            //Unable to locate element
-            //Make it wait!
-            if (!browser.FindElement(By.XPath(UserNameClass)).Displayed && !browser.FindElement(By.XPath(UserNameClass)).Text.Equals(login))
-            {
-                return false;
-            }
-            else{
-                Console.WriteLine(String.Format("The e-mail for the user {0} is successfully created!", login));
-                Thread.Sleep(3000);
-                CloseOrangeMailboxPage();
-                return true;
-            }
-        }
-
-        public static void CheckMailboxState(string login)
-        {
-            while (!CheckMailBoxCreated(login).Equals(true))
-            {
-                Thread.Sleep(1000);
-            }
+            WebDriverWait wait = new WebDriverWait(browser, TimeSpan.FromSeconds(30));
+            wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath(UserNameClass), login));
+            //if the element is not Displayed and not visible, reload the page
+            
+                //Thread.Sleep(3000);
+                //Console.WriteLine(String.Format("The user with login {0} is successfully creted!", login));
+                //CloseOrangeMailboxPage();
+ 
         }
 
         public static void CloseOrangeMailboxPage()
@@ -192,7 +180,7 @@ namespace OrangeMailbox
             OpenOrangeMailboxPage();
             List<string> bogusData = DataGenerator.CreateBogusData();
             FillFormsOnOrangeMailboxPage(bogusData, amount);
-            CheckMailboxState(bogusData[2]);
+            CheckMailBoxCreated(bogusData[2]);
         }
     }
 }
