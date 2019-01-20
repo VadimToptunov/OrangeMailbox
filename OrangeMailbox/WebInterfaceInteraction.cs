@@ -26,6 +26,7 @@ namespace OrangeMailbox
         const string ERRORXPATH = "//*[@class='suggest__status-text error-message']";
         const string HINTMENU = "//*[@class='menu menu_size_m menu_width_max menu_theme_normal control-questions menu_type_radio select2__menu select2__menu']";
         const string CAPCHALINE = "//*[@class='registration__label']";
+        const string LOGINUSED = "//*[@class='suggest__status-text error-message']";
         public static string UserNameClass = "//*[@class='mail-User-Name']";
 
 
@@ -111,7 +112,7 @@ namespace OrangeMailbox
         }
 
 
-        public static void FillFormsOnOrangeMailboxPage(List<string> bogusData, int amount)
+        public static void FillFormsOnOrangeMailboxPage(List<string> bogusData)
         {
             browser.FindElement(By.LinkText("Завести почту")).Click();
 
@@ -138,8 +139,7 @@ namespace OrangeMailbox
             hintAnswer.SendKeys(secretAnswer);
             IWebElement submitButton = browser.FindElement(By.XPath(SUBMITBUTTONXPATH));
             ScrollDownToElement(submitButton);
-            
-            CreateXlsDocument.CreateAndFillFile(bogusData, amount);
+           
         }
 
         public static void CheckNoErrorsAppear()
@@ -157,16 +157,49 @@ namespace OrangeMailbox
             catch (NoSuchElementException exception){}
         }
 
+        static void CheckLoginUsedError()
+        {
+            try
+            {
+                browser.FindElement(By.XPath(LOGINUSED));
+                string newBogusLogin = DataGenerator.BogusUsername();
+                IWebElement loginField = browser.FindElement(By.Id(LOGINID));
+                loginField.Clear();
+                loginField.SendKeys(newBogusLogin);
+                // Add the newBogusLogin to BogusData to save it then
+            }
+            catch (NoSuchElementException exception)
+            {
+            }
+        }
+
         public static void CheckMailBoxCreated(string login)
         {
             WebDriverWait wait = new WebDriverWait(browser, TimeSpan.FromSeconds(30));
             wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath(UserNameClass), login));
-            //if the element is not Displayed and not visible, reload the page
-            
-                //Thread.Sleep(3000);
-                //Console.WriteLine(String.Format("The user with login {0} is successfully creted!", login));
-                //CloseOrangeMailboxPage();
- 
+
+            Thread.Sleep(3000);
+            Console.WriteLine(String.Format("The user with login {0} is successfully created!", login));
+            CloseOrangeMailboxPage();
+        }
+
+        public static void CheckUserNameAppeared(string login)
+        {
+            try
+            {
+                CheckMailBoxCreated(login);
+            }
+            catch (NoSuchElementException exception)
+            {
+                browser.Navigate().Refresh();
+                CheckMailBoxCreated(login);
+            }
+        }
+
+        static string GetLogin()
+        {
+            //The values are not passed
+            return browser.FindElement(By.Id(LOGINID)).Text.ToString();
         }
 
         public static void CloseOrangeMailboxPage()
@@ -179,8 +212,12 @@ namespace OrangeMailbox
         {
             OpenOrangeMailboxPage();
             List<string> bogusData = DataGenerator.CreateBogusData();
-            FillFormsOnOrangeMailboxPage(bogusData, amount);
-            CheckMailBoxCreated(bogusData[2]);
+            FillFormsOnOrangeMailboxPage(bogusData);
+            Thread.Sleep(10000);
+            string login = GetLogin();
+            bogusData[2] = login;
+            CreateXlsDocument.CreateAndFillFile(bogusData, amount);
+            CheckUserNameAppeared(login);
         }
     }
 }
