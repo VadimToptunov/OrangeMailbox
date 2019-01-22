@@ -220,14 +220,16 @@ namespace OrangeMailbox
         public static void WebActions(int amount)
         {
             OpenOrangeMailboxPage();
+            String filename = CreateXlsDocument.CreateFilePath();
+            CreateXlsDocument.CreateEmptyFile(filename);
             List<string> bogusData = DataGenerator.CreateBogusData();
             FillFormsOnOrangeMailboxPage(bogusData);
             CheckLoginUsedError();
             Thread.Sleep(5000);
             string login = GetLogin();
             bogusData[2] = login;
-            CreateXlsDocument.CreateAndFillFile(bogusData, amount);
             CheckUserNameAppeared(login);
+            CreateXlsDocument.CreateXmlxWithData(bogusData, filename);
         }
     }
 }

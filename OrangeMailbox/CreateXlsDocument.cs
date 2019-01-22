@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Office.Interop.Excel;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -11,28 +12,71 @@ namespace OrangeMailbox
     {
         private static DateTime Date = DateTime.UtcNow.Date;
 
-        public static void CreateAndFillFile(List<string> bogusData, int amount)
+        public static String CreateFilePath()
         {
-            List<CodeDetail> codeDetails = PopulateCodeDetails(bogusData, amount);
-            
             Random random = new Random();
             String XlsFilename = String.Format("{0}_{1}_Mailboxes.xlsx", Date.ToString("dd-MM-yyyy"), random.Next(1234567890).ToString());
             String FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), XlsFilename);
+            return FilePath;
+        }
+
+        static void CreateEmptyFile(ExcelWorksheet workSheet, String FilePath)
+        {   
+            
             FileInfo fileInfo = new FileInfo(FilePath);
 
             using (ExcelPackage excelPackage = new ExcelPackage(fileInfo))
             {
-                var workSheet = GetWorkSheet(excelPackage, 0);
+                var workSheetCreated = workSheet;
+                FillWorkSheet(workSheetCreated);
+                excelPackage.Save(); // Workbook should have at least one workSheet
+            }
+        }
+
+        static void CreateXmlxWithData(List<string> bogusData, ExcelPackage excelPackage, String filePath)
+        {
+            ExcelWorksheet workSheet = GetWorkSheet(excelPackage);
+            //CreateEmptyFile(workSheet, filePath);
+            FillXmlsFile(bogusData, filePath, workSheet);
+            excelPackage.Save();
+        }
+
+        public static void CreateEmptyFile(String FilePath)
+        {
+            //Some issues can occur here
+            ExcelPackage excelPackage = new ExcelPackage(new FileInfo(FilePath));
+            var workSheet = GetWorkSheet(excelPackage);
+            CreateEmptyFile(workSheet, FilePath);
+        }
+
+        public static void CreateXmlxWithData(List<string> bogusData, String filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            ExcelPackage excelPackage = new ExcelPackage(fileInfo);
+            CreateXmlxWithData(bogusData, excelPackage, filePath);
+
+        } 
+
+        static void FillXmlsFile(List<string> bogusData, String FilePath, ExcelWorksheet workSheet)
+        {
+            List<CodeDetail> codeDetails = PopulateCodeDetails(bogusData);
+            FileInfo fileInfo = new FileInfo(FilePath);
+            using (ExcelPackage excelPackage = new ExcelPackage(fileInfo))
+            {
                 workSheet.Cells["A2"].LoadFromCollection(codeDetails, false, OfficeOpenXml.Table.TableStyles.Medium14);
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                 excelPackage.Save();
             }
         }
 
-        static ExcelWorksheet GetWorkSheet(ExcelPackage excelPackage, int count)
+        public static ExcelWorksheet GetWorkSheet(ExcelPackage excelPackage)
         {
             var workSheet = excelPackage.Workbook.Worksheets.Add("Orange Mailboxes");
+            return workSheet;
+        }
 
+        static void FillWorkSheet(ExcelWorksheet workSheet)
+        {
             workSheet.View.ShowGridLines = true;
             workSheet.Cells["A1"].Value = "Date";
             workSheet.Cells["B1"].Value = "First name";
@@ -43,27 +87,25 @@ namespace OrangeMailbox
             workSheet.Cells["G1"].Value = "Secret Answer";
             workSheet.Cells["A1:G1"].Style.Font.Bold = true;
             workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
-
-            return workSheet;
         }
 
-        public static List<CodeDetail> PopulateCodeDetails(List<string> bogusData, int amount)
+        public static List<CodeDetail> PopulateCodeDetails(List<string> bogusData)
         {
             List<CodeDetail> codeDetails = new List<CodeDetail>();
-            for (int i = 1; i <= amount; i++)
-            {
-                //May be amount should be in some another place
-                CodeDetail codeDetail = new CodeDetail();
-                List<string> generatedData = bogusData;
-                codeDetail.DateNow = Date.ToString("dd/MM/yyyy");
-                codeDetail.FirstName = generatedData[0];
-                codeDetail.LastName = generatedData[1];
-                codeDetail.Login = generatedData[2];
-                codeDetail.Password = generatedData[3];
-                codeDetail.SecretQuestion = generatedData[4];
-                codeDetail.SecretAnswer = generatedData[5];
-                codeDetails.Add(codeDetail);
-            }
+            
+            CodeDetail codeDetail = new CodeDetail();
+
+            List<string> generatedData = bogusData;
+
+            codeDetail.DateNow = Date.ToString("dd/MM/yyyy");
+            codeDetail.FirstName = generatedData[0];
+            codeDetail.LastName = generatedData[1];
+            codeDetail.Login = generatedData[2];
+            codeDetail.Password = generatedData[3];
+            codeDetail.SecretQuestion = generatedData[4];
+            codeDetail.SecretAnswer = generatedData[5];
+            codeDetails.Add(codeDetail);
+
             return codeDetails;
         }
     }
