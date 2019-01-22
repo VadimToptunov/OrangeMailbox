@@ -157,16 +157,24 @@ namespace OrangeMailbox
             catch (NoSuchElementException exception){}
         }
 
+        static void CreateNewLogin()
+        {
+            string newBogusLogin = DataGenerator.BogusUsername();
+            IWebElement loginField = browser.FindElement(By.Id(LOGINID));
+            loginField.Click();
+            loginField.SendKeys(Keys.Control + "a");
+            loginField.SendKeys(Keys.Delete);
+            loginField.SendKeys(newBogusLogin);
+        }
+
         static void CheckLoginUsedError()
         {
             try
             {
-                browser.FindElement(By.XPath(LOGINUSED));
-                string newBogusLogin = DataGenerator.BogusUsername();
-                IWebElement loginField = browser.FindElement(By.Id(LOGINID));
-                loginField.Clear();
-                loginField.SendKeys(newBogusLogin);
-                // Add the newBogusLogin to BogusData to save it then
+                while(browser.FindElement(By.XPath(LOGINUSED)).Displayed){
+                    Thread.Sleep(1000);
+                    CreateNewLogin();
+                }
             }
             catch (NoSuchElementException exception)
             {
@@ -198,8 +206,9 @@ namespace OrangeMailbox
 
         static string GetLogin()
         {
-            //The values are not passed
-            return browser.FindElement(By.Id(LOGINID)).Text.ToString();
+            IWebElement loginField = browser.FindElement(By.Id(LOGINID));
+            loginField.Click();
+            return loginField.GetAttribute("value");
         }
 
         public static void CloseOrangeMailboxPage()
@@ -213,7 +222,8 @@ namespace OrangeMailbox
             OpenOrangeMailboxPage();
             List<string> bogusData = DataGenerator.CreateBogusData();
             FillFormsOnOrangeMailboxPage(bogusData);
-            Thread.Sleep(10000);
+            CheckLoginUsedError();
+            Thread.Sleep(5000);
             string login = GetLogin();
             bogusData[2] = login;
             CreateXlsDocument.CreateAndFillFile(bogusData, amount);
